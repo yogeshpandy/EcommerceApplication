@@ -1,6 +1,6 @@
 import './categories.styles.scss'
 import './App.css';
-import CategoryItem from './components/category-item/category-item.component';
+import CategoryMenu from './components/category-menu/category-menu.component';
 
 const App = () => {
   const categories = [
@@ -24,12 +24,18 @@ const App = () => {
     },
     {
       id:4,
+      title:'Kids',
+      imageUrl: 'https://sc04.alicdn.com/kf/Hecd7a349ae384594b2a9415599211812i.jpg',
+      subtitle: 'Shop Now'
+    },
+    {
+      id:5,
       title:'Womens',
       imageUrl: 'https://media.gettyimages.com/photos/modern-woman-picture-id696869378?s=612x612',
       subtitle: 'Shop Now'
     },
     {
-      id:5,
+      id:6,
       title:'Mens',
       imageUrl: 'https://thumbs.dreamstime.com/b/side-view-fashion-man-holding-his-leather-jacket-looking-away-camera-against-blue-sky-35062606.jpg',
       subtitle: 'Shop Now'
@@ -37,12 +43,8 @@ const App = () => {
   ]
 
   return (
-    <div className='categories-container'>
-      {
-        categories.map((category)=>(
-          <CategoryItem  key={category.id} category={category} />
-        ))
-      }
+    <div>
+      <CategoryMenu categories={categories} />
     </div>
   );
 }
