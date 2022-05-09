@@ -1,8 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { async } from "@firebase/util";
 import { initializeApp } from "firebase/app";
-import {getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import {getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
+  createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore/lite'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,7 +20,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 
-//create a provider
+//create a provider (Google, Facebook, GitHub, etc.,)
 const provider = new GoogleAuthProvider();
 
 provider.setCustomParameters({
@@ -30,16 +31,21 @@ export const auth = getAuth();
 
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, provider);
+
 export const db = getFirestore(); 
+console.log("Database ",db)
 
 export const  createUserDocumentFromAuth = async (userAuth) => {
+  if(!userAuth)
+   return;
   console.log(userAuth.uid)
+  //doc(databaseName, collectionsName,  id)
   const userDocRef = doc(db, 'users', userAuth.uid)
-  console.log(userDocRef)
+  console.log("UserDocRef 1 ",userDocRef)
   const userSnapshot = await getDoc(userDocRef);
   console.log(userSnapshot)
 
-  
   // if user data doesn't exists
       // create / set the document with the data from userAuth in my collection
     
@@ -63,6 +69,32 @@ export const  createUserDocumentFromAuth = async (userAuth) => {
       return userDocRef;
     }
 
-
-  
 };
+
+export const createAuthUserWithEmailAndPassword = async(email, password, displayName) => {
+  if(!email || !password) {
+    return;
+  }
+
+  try {
+    const createdUserWithEmailPassword = await createUserWithEmailAndPassword(auth, email, password)
+      .catch((err) => {
+        if(err.code==='auth/email-already-in-use')
+          alert("Can't create user, email already exists!")
+        else if(err.code==='auth/weak-password') {
+          alert("Can't create user, Weak password!")
+        }
+        else {
+          console.log(err)  
+        }
+      }
+    );
+    console.log("1 => ",createdUserWithEmailPassword)
+    await updateProfile(auth.currentUser, { displayName: displayName }).catch(
+      (err) => console.log(err)
+    );   
+    return createdUserWithEmailPassword;
+  } catch (err) {
+    console.log(err);
+  }
+}
