@@ -2,7 +2,7 @@
 import { async } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import {getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
-  createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+  createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore/lite'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -75,7 +75,6 @@ export const createAuthUserWithEmailAndPassword = async(email, password, display
   if(!email || !password) {
     return;
   }
-
   try {
     const createdUserWithEmailPassword = await createUserWithEmailAndPassword(auth, email, password)
       .catch((err) => {
@@ -98,3 +97,25 @@ export const createAuthUserWithEmailAndPassword = async(email, password, display
     console.log(err);
   }
 }
+
+export const signInUserWithEmailAndPassword = async(email, password) => {
+  if(!email || !password) {
+    return;
+  }
+  // try {
+    const loggedUser = await signInWithEmailAndPassword(auth, email, password)
+    // .catch(
+    //   (err)=>{
+    //     if(err.code==='auth/wrong-password'){
+    //       alert('auth/wrong-password')
+    //     }
+    //     else {
+    //       console.log(err)
+    //     }
+    //   }
+    // );
+    return loggedUser;
+  // } catch(err) {
+  //   console.log('unable to sign in err', err)
+  // }
+} 
