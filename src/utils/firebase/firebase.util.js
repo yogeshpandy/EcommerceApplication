@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
-import { async } from "@firebase/util";
+// import { async } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import {getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
-  createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from 'firebase/auth'
+  createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore/lite'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -18,7 +18,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
+// const firebaseApp = 
+initializeApp(firebaseConfig);
 
 //create a provider (Google, Facebook, GitHub, etc.,)
 const provider = new GoogleAuthProvider();
@@ -42,9 +43,9 @@ export const  createUserDocumentFromAuth = async (userAuth) => {
   console.log(userAuth.uid)
   //doc(databaseName, collectionsName,  id)
   const userDocRef = doc(db, 'users', userAuth.uid)
-  console.log("UserDocRef 1 ",userDocRef)
+  // console.log("UserDocRef 1 ",userDocRef)
   const userSnapshot = await getDoc(userDocRef);
-  console.log(userSnapshot)
+  // console.log(userSnapshot)
 
   // if user data doesn't exists
       // create / set the document with the data from userAuth in my collection
@@ -102,20 +103,11 @@ export const signInUserWithEmailAndPassword = async(email, password) => {
   if(!email || !password) {
     return;
   }
-  // try {
-    const loggedUser = await signInWithEmailAndPassword(auth, email, password)
-    // .catch(
-    //   (err)=>{
-    //     if(err.code==='auth/wrong-password'){
-    //       alert('auth/wrong-password')
-    //     }
-    //     else {
-    //       console.log(err)
-    //     }
-    //   }
-    // );
-    return loggedUser;
-  // } catch(err) {
-  //   console.log('unable to sign in err', err)
-  // }
+  const loggedUser = await signInWithEmailAndPassword(auth, email, password)
+  return loggedUser;
 } 
+
+export const signOutCurrentUser = async() => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback)
+// export const onAuthStateChangedListener = (callback, error, completed) => onAuthStateChanged(auth, callback, error, completed)

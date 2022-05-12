@@ -1,6 +1,8 @@
-import { useState } from 'react';
-import { createUserDocumentFromAuth, signInUserWithEmailAndPassword, signInWithGooglePopup } from '../../utils/firebase/firebase.util';
-
+import { useState, 
+    // useContext
+ } from 'react';
+import {  signInUserWithEmailAndPassword, signInWithGooglePopup } from '../../utils/firebase/firebase.util';
+// import { UserContext } from '../../contexts/user.context';
 import FormInput from '../../components/form-input/form-input.component'
 import './sign-in.styles.scss'
 import Button from '../../components/button/button.component';
@@ -11,14 +13,17 @@ const defaultFormFields = {
 }
 
 const SignIn = () => {
-    const [formFields, setFormFields] = new useState(defaultFormFields);
-    const {email, password} = formFields;
-
+    const [ formFields, setFormFields ] = new useState(defaultFormFields);
+    const { email, password } = formFields;
+    // const { setCurrentUser } = useContext(UserContext);
 
     const logGoogleUser = async () => {
-        const {user} = await signInWithGooglePopup();
-        console.log("popup ",user)
-        await createUserDocumentFromAuth(user);
+        // const {user} = await signInWithGooglePopup();
+        await signInWithGooglePopup();
+    
+        // // console.log("popup ",user)
+        // setCurrentUser(user)
+        // await createUserDocumentFromAuth(user);
     }
 
     const handleChange = (event) => {
@@ -33,17 +38,21 @@ const SignIn = () => {
     const handleSubmit = async(event) => {
         event.preventDefault();
         try {
-            const loggedUser = await signInUserWithEmailAndPassword(email, password);
-            console.log("logged ",loggedUser)
+            // const {user} = await signInUserWithEmailAndPassword(email, password);
+            
+            await signInUserWithEmailAndPassword(email, password);
+            // console.log("logged ",user)
+            // setCurrentUser(user)
             resetFormFields()
         }
         catch(err) {
             switch(err.code) {
                 case 'auth/wrong-password':
-                    alert("Invalid Password")
+                    alert("Invalid Password");
                     break;
                 case 'auth/user-not-found':
-                    alert('No user found')
+                    alert('No user found');
+                    break;
                 default:
                     console.log(err)
             }
