@@ -6,10 +6,7 @@ import Navigation from './routes/navigation/navigation.component';
 import SignIn from './routes/authentication/authentication.component'
 import TicTacToe from './utils/games/tictactoe.component';
 import Authentication from './routes/authentication/authentication.component';
-
-const Shop =() => {
-  return <h2>I am the Shop Page</h2>
-}
+import Shop from './routes/shop/shop.component';
 
 const App = () => {
 
